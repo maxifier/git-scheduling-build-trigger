@@ -2,11 +2,11 @@ package com.maxifier.teamcity.trigger;
 
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
+import jetbrains.buildServer.buildTriggers.BuildTriggerService;
 import jetbrains.buildServer.buildTriggers.BuildTriggeringPolicy;
 import jetbrains.buildServer.buildTriggers.PolledBuildTrigger;
 import jetbrains.buildServer.buildTriggers.PolledTriggerContext;
 import jetbrains.buildServer.buildTriggers.scheduler.SchedulerBuildTriggerService;
-import jetbrains.buildServer.log.Loggers;
 import jetbrains.buildServer.serverSide.BatchTrigger;
 import jetbrains.buildServer.serverSide.BuildCustomizer;
 import jetbrains.buildServer.serverSide.BuildCustomizerFactory;
@@ -20,14 +20,12 @@ import jetbrains.buildServer.web.openapi.PluginDescriptor;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * @author aleksey.didik@maxifier.com (Aleksey Didik)
  */
-public class GitScheduledBuildTrigger extends SchedulerBuildTriggerService {
+public class GitScheduledBuildTrigger extends BuildTriggerService {
 
-    private static final Logger LOG = Logger.getLogger(Loggers.VCS_CATEGORY);
 
     public static final String GIT_BRANCH_NAME = "branchName";
     public static final String DEFAULT_BRANCH = "master";
@@ -35,14 +33,15 @@ public class GitScheduledBuildTrigger extends SchedulerBuildTriggerService {
 
     private ThreadLocal<String> handoff = new ThreadLocal<String>();
 
+    private SchedulerBuildTriggerService delegate;
+
     public GitScheduledBuildTrigger(PluginDescriptor pluginDescriptor,
                                     EventDispatcher<BuildServerListener> buildServerListenerEventDispatcher,
                                     BatchTrigger batchTrigger,
                                     BuildCustomizerFactory buildCustomizerFactory) {
-        super(buildServerListenerEventDispatcher, batchTrigger, buildCustomizerFactory);
+        delegate = new SchedulerBuildTriggerService(buildServerListenerEventDispatcher,
+                batchTrigger, new BranchBuildCustomizerFactory(buildCustomizerFactory));
         this.pluginDescriptor = pluginDescriptor;
-
-        LOG.info("Start of Git scheduling build trigger");
     }
 
     @Override
@@ -57,7 +56,7 @@ public class GitScheduledBuildTrigger extends SchedulerBuildTriggerService {
 
     @Override
     public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
-        return String.format("%s%nFor git branch: '%s'", super.describeTrigger(buildTriggerDescriptor),
+        return String.format("%s%nFor git branch: '%s'", delegate.describeTrigger(buildTriggerDescriptor),
                 buildTriggerDescriptor.getProperties().get(GIT_BRANCH_NAME));
     }
 
@@ -73,12 +72,12 @@ public class GitScheduledBuildTrigger extends SchedulerBuildTriggerService {
 
     @Override
     public BuildTriggeringPolicy getBuildTriggeringPolicy() {
-        final PolledBuildTrigger policy = (PolledBuildTrigger) super.getBuildTriggeringPolicy();
+        final PolledBuildTrigger policy = (PolledBuildTrigger) delegate.getBuildTriggeringPolicy();
 
         return new PolledBuildTrigger() {
             @Override
             public void triggerBuild(PolledTriggerContext polledTriggerContext) throws BuildTriggerException {
-
+                handoff.set(polledTriggerContext.getTriggerDescriptor().getProperties().get(GIT_BRANCH_NAME));
                 policy.triggerBuild(polledTriggerContext);
             }
         };
@@ -86,7 +85,7 @@ public class GitScheduledBuildTrigger extends SchedulerBuildTriggerService {
 
     @Override
     public PropertiesProcessor getTriggerPropertiesProcessor() {
-        final PropertiesProcessor superProcessor = super.getTriggerPropertiesProcessor();
+        final PropertiesProcessor superProcessor = delegate.getTriggerPropertiesProcessor();
 
         return new PropertiesProcessor() {
             @Override
