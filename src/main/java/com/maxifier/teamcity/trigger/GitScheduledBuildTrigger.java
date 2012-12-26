@@ -31,7 +31,6 @@ import jetbrains.buildServer.serverSide.PropertiesProcessor;
 import jetbrains.buildServer.serverSide.SBuildAgent;
 import jetbrains.buildServer.serverSide.TriggerTask;
 import jetbrains.buildServer.util.EventDispatcher;
-import jetbrains.buildServer.util.StringUtil;
 import jetbrains.buildServer.util.SystemTimeService;
 import jetbrains.buildServer.util.TimeService;
 import jetbrains.buildServer.vcs.SVcsModification;
@@ -112,7 +111,7 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
         return new PolledBuildTrigger() {
             @Override
             public void triggerBuild(PolledTriggerContext polledTriggerContext) throws BuildTriggerException {
-                //ugly hack, of cause :)
+                //ugly hack, of course :)
                 BuildTypeEx buildType = (BuildTypeEx) polledTriggerContext.getBuildType();
                 BuildTriggerDescriptor triggerDescriptor = polledTriggerContext.getTriggerDescriptor();
                 Map<String, String> properties = triggerDescriptor.getProperties();
@@ -231,15 +230,20 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
 
 
             private boolean isTriggerIfPendingChanges(Map<String, String> props) {
-                return StringUtil.isTrue(props.get("triggerBuildWithPendingChangesOnly"));
+                String property = props.get("triggerBuildWithPendingChangesOnly");
+                return isTrue(property);
+            }
+
+            private boolean isTrue(String property) {
+                return Boolean.parseBoolean(property) || "yes".equalsIgnoreCase(property);
             }
 
             private boolean isEnforceCleanCheckout(Map<String, String> props) {
-                return StringUtil.isTrue(props.get("enforceCleanCheckout"));
+                return isTrue(props.get("enforceCleanCheckout"));
             }
 
             private boolean isTriggerOnAllCompatibleAgents(Map<String, String> props) {
-                return StringUtil.isTrue(props.get("triggerBuildOnAllCompatibleAgents"));
+                return isTrue(props.get("triggerBuildOnAllCompatibleAgents"));
             }
 
             private Time createTime(Map map) {
