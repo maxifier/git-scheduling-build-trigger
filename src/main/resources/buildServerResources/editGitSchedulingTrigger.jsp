@@ -9,11 +9,11 @@
     The time is in the server timezone, current time: <strong><%=Dates.formatDate(Dates.now(), "dd MMM yy HH:mm Z")%></strong></em></td>
 </tr>
 <tr>
-    <td><label for="branchName">Git branch name: <l:star/></label></td>
+    <td><label for="branchesNames">Git branches list: <l:star/></label></td>
     <td>
-       <props:textProperty name="branchName" style="width:100%;"/>
+       <props:textProperty name="branchesNames" style="width:100%;"/>
       <span class="smallNote">
-          Git branch name, like master, topic2.
+          Git branches list divided by , or ;(e.g master, topic2).
       </span>
     </td>
 </tr>
