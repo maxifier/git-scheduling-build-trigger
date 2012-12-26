@@ -52,7 +52,8 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
 
 
     public static final String BRANCHES = "branches";
-    public static final String DEFAULT_BRANCH = "master";
+    public static final String BUILD_DEFAULT = "buildDefault";
+
     private final PluginDescriptor pluginDescriptor;
     private final BatchTrigger batchTrigger;
     private final BuildCustomizerFactory buildCustomizerFactory;
@@ -91,7 +92,11 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
     }
 
     public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
-        return String.format("%s%nList of git branches: %s", delegate.describeTrigger(buildTriggerDescriptor),
+        return String.format("%s%n" +
+                "Default branch will %s" +
+                "%nList of git branches: %s",
+                delegate.describeTrigger(buildTriggerDescriptor),
+                isTrue(buildTriggerDescriptor.getProperties().get(BUILD_DEFAULT)) ? "be triggered" : "not be triggered",
                 buildTriggerDescriptor.getProperties().get(BRANCHES));
     }
 
@@ -125,49 +130,59 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
                 }
                 long schedulingTime = schedulingPolicy.getScheduledTime(prevCallTime);
                 if (schedulingTime > 0L && myTimeService.now() >= schedulingTime) {
-                    //prepare branches //what is false here?
+                    if (isTrue(properties.get(BUILD_DEFAULT))) {
+                        add2Queue(polledTriggerContext, buildType.getBranch("<default>"));
+                    }
+                    //prepare branches
                     List<BranchEx> branches = buildType.getBranches(BranchesPolicy.ALL_BRANCES, false);
-
                     String[] requestedBranches = properties.get(BRANCHES).split("[;|,]]");
                     for (BranchEx branch : branches) {
-                        String branchName = branch.getName();
-                        if (isRequested(branchName, requestedBranches)) {
-                            //check pending changes
-                            if (isTriggerIfPendingChanges(properties) && !pendingChanges(buildType, branch, properties)) {
-                                return;
-                            }
-                            //new build customizer, set up desired branch name if not default branch it is.
-                            BuildCustomizer buildCustomizer
-                                    = buildCustomizerFactory.createBuildCustomizer(buildType, null);
-                            if (!branch.isDefaultBranch()) {
-                                buildCustomizer.setDesiredBranchName(branchName);
-                            }
-                            //clean checkout if requested.
-                            if (isEnforceCleanCheckout(properties)) {
-                                buildCustomizer.setCleanSources(true);
-                            }
-                            //add2Queue
-                            List<TriggerTask> tasks = new LinkedList<TriggerTask>();
-                            if (isTriggerOnAllCompatibleAgents(properties)) {
-                                for (BuildAgent buildAgent : buildType.getCanRunAndCompatibleAgents(false)) {
-                                    TriggerTask task = batchTrigger.newTriggerTask(buildCustomizer.createPromotion());
-                                    task.setRunOnAgent((SBuildAgent) buildAgent);
-                                    tasks.add(task);
-                                }
-                            } else {
-                                tasks.add(batchTrigger.newTriggerTask(buildCustomizer.createPromotion()));
-                            }
-                            batchTrigger.processTasks(tasks, getDisplayName());
-                            polledTriggerContext.getCustomDataStorage().putValues(properties);
+                        if (!branch.isDefaultBranch() && isRequested(branch.getName(), requestedBranches)) {
+                            add2Queue(polledTriggerContext, branch);
                         }
                     }
 
                 }
             }
 
+            private void add2Queue(PolledTriggerContext polledTriggerContext, BranchEx branch) {
+                BuildTypeEx buildType = (BuildTypeEx) polledTriggerContext.getBuildType();
+                BuildTriggerDescriptor triggerDescriptor = polledTriggerContext.getTriggerDescriptor();
+                Map<String, String> properties = triggerDescriptor.getProperties();
+
+                //check pending changes
+                if (isTriggerIfPendingChanges(properties) && !pendingChanges(buildType, branch, properties)) {
+                    return;
+                }
+                //new build customizer, set up desired branch name if not default branch it is.
+                BuildCustomizer buildCustomizer
+                        = buildCustomizerFactory.createBuildCustomizer(buildType, null);
+                if (!branch.isDefaultBranch()) {
+                    buildCustomizer.setDesiredBranchName(branch.getName());
+                }
+                //clean checkout if requested.
+                if (isEnforceCleanCheckout(properties)) {
+                    buildCustomizer.setCleanSources(true);
+                }
+                //add2Queue
+                List<TriggerTask> tasks = new LinkedList<TriggerTask>();
+                if (isTriggerOnAllCompatibleAgents(properties)) {
+                    for (BuildAgent buildAgent : buildType.getCanRunAndCompatibleAgents(false)) {
+                        TriggerTask task = batchTrigger.newTriggerTask(buildCustomizer.createPromotion());
+                        task.setRunOnAgent((SBuildAgent) buildAgent);
+                        tasks.add(task);
+                    }
+                } else {
+                    tasks.add(batchTrigger.newTriggerTask(buildCustomizer.createPromotion()));
+                }
+                batchTrigger.processTasks(tasks, getDisplayName());
+                polledTriggerContext.getCustomDataStorage().putValues(properties);
+
+            }
+
             private boolean isRequested(String branchName, String[] requestedBranches) {
                 for (String requestedBranch : requestedBranches) {
-                    if (branchName.equals(requestedBranch.trim())) {
+                    if (requestedBranch.trim().contains(branchName)) {
                         return true;
                     }
                 }
@@ -235,9 +250,6 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
                 return isTrue(property);
             }
 
-            private boolean isTrue(String property) {
-                return Boolean.parseBoolean(property) || "yes".equalsIgnoreCase(property);
-            }
 
             private boolean isEnforceCleanCheckout(Map<String, String> props) {
                 return isTrue(props.get("enforceCleanCheckout"));
@@ -260,19 +272,19 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
 
     }
 
+    private boolean isTrue(String property) {
+        return Boolean.parseBoolean(property) || "yes".equalsIgnoreCase(property);
+    }
+
+
     @Override
     public PropertiesProcessor getTriggerPropertiesProcessor() {
-        final PropertiesProcessor superProcessor = delegate.getTriggerPropertiesProcessor();
-
         return new PropertiesProcessor() {
             @Override
             public Collection<InvalidProperty> process(Map<String, String> properties) {
-                Collection<InvalidProperty> superInvalid = superProcessor.process(properties);
-                String gitBranchName = properties.get(BRANCHES);
-                if (gitBranchName == null || gitBranchName.isEmpty()) {
-                    superInvalid.add(new InvalidProperty(BRANCHES, "Git branch should be specified"));
-                }
-                return null;
+                //TODO process
+                Collection<InvalidProperty> invalid = delegate.getTriggerPropertiesProcessor().process(properties);
+                return invalid;
             }
         };
     }
@@ -280,7 +292,8 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
     @Override
     public Map<String, String> getDefaultTriggerProperties() {
         Map<String, String> defaultProps = delegate.getDefaultTriggerProperties();
-        defaultProps.put(BRANCHES, DEFAULT_BRANCH);
+        defaultProps.put(BRANCHES, "");
+        defaultProps.put(BUILD_DEFAULT, "true");
         return defaultProps;
     }
 

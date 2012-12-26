@@ -9,11 +9,17 @@
     The time is in the server timezone, current time: <strong><%=Dates.formatDate(Dates.now(), "dd MMM yy HH:mm Z")%></strong></em></td>
 </tr>
 <tr>
-    <td><label for="branches">List of git branches:<l:star/></label></td>
+  <td colspan="2">
+    <props:checkboxProperty name="buildDefault"/>
+    <label for="buildDefault">Trigger default branch</label>
+  </td>
+</tr>
+<tr>
+    <td><label for="branches">List of additional git branches:<l:star/></label></td>
     <td>
        <props:textProperty name="branches" style="width:100%;"/>
       <span class="smallNote">
-          List of git branches (e.g master, topic2).
+          List of additional git branches (e.g master, topic2).
       </span>
     </td>
 </tr>
