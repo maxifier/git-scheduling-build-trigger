@@ -51,6 +51,7 @@ import java.util.Map;
 public class GitScheduledBuildTrigger extends BuildTriggerService {
 
 
+
     public static final String BRANCHES = "branches";
     public static final String BUILD_DEFAULT = "buildDefault";
 
@@ -135,7 +136,7 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
                         add2Queue(polledTriggerContext, buildType.getBranch("<default>"));
                     }
                     //prepare branches
-                    List<BranchEx> branches = buildType.getBranches(BranchesPolicy.ALL_BRANCES, false);
+                    List<BranchEx> branches = buildType.getBranches(BranchesPolicy.VCS_BRANCHES, false);
                     String[] requestedBranches = properties.get(BRANCHES).split("[;|,]]");
                     for (BranchEx branch : branches) {
                         if (!branch.isDefaultBranch() && isRequested(branch.getName(), requestedBranches)) {
@@ -182,8 +183,12 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
             }
 
             private boolean isRequested(String branchName, String[] requestedBranches) {
+                String cleanBranchName = branchName;
+                if (branchName.contains("/")) {
+                    cleanBranchName = branchName.replace("refs/heads/", "");
+                }
                 for (String requestedBranch : requestedBranches) {
-                    if (requestedBranch.trim().contains(branchName)) {
+                    if (requestedBranch.trim().contains(cleanBranchName)) {
                         return true;
                     }
                 }
