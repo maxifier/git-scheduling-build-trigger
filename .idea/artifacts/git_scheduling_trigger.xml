@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact name="git-scheduling-trigger">
+    <output-path>$PROJECT_DIR$/build/</output-path>
+    <root id="root">
+      <element id="archive" name="git-scheduling-trigger.zip">
+        <element id="file-copy" path="$PROJECT_DIR$/teamcity-plugin.xml" />
+        <element id="directory" name="server">
+          <element id="archive" name="git-scheduling-trigger.jar">
+            <element id="module-output" name="main" />
+          </element>
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
