@@ -4,7 +4,7 @@
     <info>
         <name>git-scheduling-build-trigger</name>
         <display-name>Git scheduling build trigger</display-name>
-        <version>@Plugin_Version@</version>
+        <version>1</version>
         <description>Workaround for TW-23879</description>
     </info>
     <deployment use-separate-classloader="true"/>
