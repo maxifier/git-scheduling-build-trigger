@@ -92,12 +92,13 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
     }
 
     public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
+        String branches = buildTriggerDescriptor.getProperties().get(BRANCHES);
         return String.format("%s%n" +
                 "Default branch will %s" +
                 "%nList of git branches: %s",
                 delegate.describeTrigger(buildTriggerDescriptor),
                 isTrue(buildTriggerDescriptor.getProperties().get(BUILD_DEFAULT)) ? "be triggered" : "not be triggered",
-                buildTriggerDescriptor.getProperties().get(BRANCHES));
+                branches != null ?  branches : "none");
     }
 
     @Override

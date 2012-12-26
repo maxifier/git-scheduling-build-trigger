@@ -33,6 +33,7 @@
     <ignored path="git-sheduling-build-trigger.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="aa25d31a-7c62-4ef6-9d7c-8640cf8be23e" time="1356526593768" ignored="false" />
+    <file path="/GitScheduledBuildTrigger.java" changelist="aa25d31a-7c62-4ef6-9d7c-8640cf8be23e" time="1356533372057" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +95,23 @@
       <file leaf-file-name="GitScheduledBuildTrigger.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/maxifier/teamcity/trigger/GitScheduledBuildTrigger.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="14" selection-start="555" selection-end="555" vertical-scroll-proportion="0.1768868">
+            <state line="107" column="75" selection-start="4723" selection-end="4723" vertical-scroll-proportion="0.6535714">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="method#describeTrigger#0;class#GitScheduledBuildTrigger#0" expanded="true" />
+                <element signature="e#7911#7924#0" expanded="true" />
+                <element signature="e#9328#9346#0" expanded="true" />
+                <element signature="e#13027#13368#0" expanded="true" />
+                <element signature="e#13357#13358#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="editGitSchedulingTrigger.jsp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/buildServerResources/editGitSchedulingTrigger.jsp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="17" column="62" selection-start="849" selection-end="849" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -111,12 +128,21 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitLogSettings">
+    <option name="myStructureFilterPaths" />
     <option name="myDateState">
       <MyDateState />
     </option>
   </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/src/main/java/com/maxifier/teamcity/trigger/GitScheduledBuildTrigger.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/buildServerResources/editGitSchedulingTrigger.jsp" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="3346" />
+    <option name="x" value="-14" />
     <option name="y" value="-7" />
     <option name="width" value="1694" />
     <option name="height" value="1022" />
@@ -163,6 +189,38 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="git-sheduling-build-trigger" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="git-sheduling-build-trigger" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="buildServerResources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -328,10 +386,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="3346" y="-7" width="1694" height="1022" extended-state="6" />
-    <editor active="false" />
+    <frame x="-14" y="-7" width="1694" height="1022" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32951945" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Atlassian " active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -345,7 +403,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1944107" sideWeight="0.6693364" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1944107" sideWeight="0.67048055" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -434,10 +492,24 @@
     </option>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/buildServerResources/editGitSchedulingTrigger.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="62" selection-start="849" selection-end="849" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/maxifier/teamcity/trigger/GitScheduledBuildTrigger.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="14" selection-start="555" selection-end="555" vertical-scroll-proportion="0.1768868">
-          <folding />
+        <state line="107" column="75" selection-start="4723" selection-end="4723" vertical-scroll-proportion="0.6535714">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#describeTrigger#0;class#GitScheduledBuildTrigger#0" expanded="true" />
+            <element signature="e#7911#7924#0" expanded="true" />
+            <element signature="e#9328#9346#0" expanded="true" />
+            <element signature="e#13027#13368#0" expanded="true" />
+            <element signature="e#13357#13358#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

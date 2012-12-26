@@ -15,7 +15,7 @@
   </td>
 </tr>
 <tr>
-    <td><label for="branches">List of additional git branches:<l:star/></label></td>
+    <td><label for="branches">List of additional git branches:</label></td>
     <td>
        <props:textProperty name="branches" style="width:100%;"/>
       <span class="smallNote">
