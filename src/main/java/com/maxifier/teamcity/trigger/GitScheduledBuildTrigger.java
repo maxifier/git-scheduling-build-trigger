@@ -51,7 +51,7 @@ import java.util.Map;
 public class GitScheduledBuildTrigger extends BuildTriggerService {
 
 
-    public static final String GIT_BRANCH_NAME = "branchesName";
+    public static final String BRANCHES = "branches";
     public static final String DEFAULT_BRANCH = "master";
     private final PluginDescriptor pluginDescriptor;
     private final BatchTrigger batchTrigger;
@@ -90,10 +90,9 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
         return "Git Scheduling Trigger";
     }
 
-    @Override
     public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
-        return String.format("%s%nFor git branch: '%s'", delegate.describeTrigger(buildTriggerDescriptor),
-                buildTriggerDescriptor.getProperties().get(GIT_BRANCH_NAME));
+        return String.format("%s%nList of git branches: %s", delegate.describeTrigger(buildTriggerDescriptor),
+                buildTriggerDescriptor.getProperties().get(BRANCHES));
     }
 
     @Override
@@ -127,9 +126,9 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
                 long schedulingTime = schedulingPolicy.getScheduledTime(prevCallTime);
                 if (schedulingTime > 0L && myTimeService.now() >= schedulingTime) {
                     //prepare branches //what is false here?
-                    List<BranchEx> branches = buildType.getBranches(BranchesPolicy.VCS_BRANCHES, false);
+                    List<BranchEx> branches = buildType.getBranches(BranchesPolicy.ALL_BRANCES, false);
 
-                    String[] requestedBranches = properties.get(GIT_BRANCH_NAME).split("[;|,]]");
+                    String[] requestedBranches = properties.get(BRANCHES).split("[;|,]]");
                     for (BranchEx branch : branches) {
                         String branchName = branch.getName();
                         if (isRequested(branchName, requestedBranches)) {
@@ -137,10 +136,12 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
                             if (isTriggerIfPendingChanges(properties) && !pendingChanges(buildType, branch, properties)) {
                                 return;
                             }
-                            //new build customizer, set up desired branch name
+                            //new build customizer, set up desired branch name if not default branch it is.
                             BuildCustomizer buildCustomizer
                                     = buildCustomizerFactory.createBuildCustomizer(buildType, null);
-                            buildCustomizer.setDesiredBranchName(branchName);
+                            if (!branch.isDefaultBranch()) {
+                                buildCustomizer.setDesiredBranchName(branchName);
+                            }
                             //clean checkout if requested.
                             if (isEnforceCleanCheckout(properties)) {
                                 buildCustomizer.setCleanSources(true);
@@ -267,9 +268,9 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
             @Override
             public Collection<InvalidProperty> process(Map<String, String> properties) {
                 Collection<InvalidProperty> superInvalid = superProcessor.process(properties);
-                String gitBranchName = properties.get(GIT_BRANCH_NAME);
+                String gitBranchName = properties.get(BRANCHES);
                 if (gitBranchName == null || gitBranchName.isEmpty()) {
-                    superInvalid.add(new InvalidProperty(GIT_BRANCH_NAME, "Git branch should be specified"));
+                    superInvalid.add(new InvalidProperty(BRANCHES, "Git branch should be specified"));
                 }
                 return null;
             }
@@ -278,8 +279,8 @@ public class GitScheduledBuildTrigger extends BuildTriggerService {
 
     @Override
     public Map<String, String> getDefaultTriggerProperties() {
-        Map<String, String> defaultProps = super.getDefaultTriggerProperties();
-        defaultProps.put(GIT_BRANCH_NAME, DEFAULT_BRANCH);
+        Map<String, String> defaultProps = delegate.getDefaultTriggerProperties();
+        defaultProps.put(BRANCHES, DEFAULT_BRANCH);
         return defaultProps;
     }
 

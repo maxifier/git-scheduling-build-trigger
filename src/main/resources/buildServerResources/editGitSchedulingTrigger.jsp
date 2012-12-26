@@ -9,9 +9,9 @@
     The time is in the server timezone, current time: <strong><%=Dates.formatDate(Dates.now(), "dd MMM yy HH:mm Z")%></strong></em></td>
 </tr>
 <tr>
-    <td><label for="branchesNames">List of git branches:<l:star/></label></td>
+    <td><label for="branches">List of git branches:<l:star/></label></td>
     <td>
-       <props:textProperty name="branchesNames" style="width:100%;"/>
+       <props:textProperty name="branches" style="width:100%;"/>
       <span class="smallNote">
           List of git branches (e.g master, topic2).
       </span>
